@@ -27,5 +27,6 @@ public class ChessMatch {	// regras do jogo de xadrez
 	private void initialSetup() {	// responsável por iniciar a partida de xadrez colocando as peças no tabuleiro
 		board.placePiece(new Rook(board, Color.WHITE), new Position(2, 1));		// instanciando as peças no tabuleiro
 		board.placePiece(new King(board, Color.BLACK), new Position(3, 2));
+		board.placePiece(new King(board, Color.BLACK), new Position(6, 2));
 	}
 }
