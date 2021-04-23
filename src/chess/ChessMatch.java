@@ -44,6 +44,9 @@ public class ChessMatch {	// regras do jogo de xadrez
 		if(!board.thereIsAPiece(position)) {
 			throw new ChessException("Não existe a peça na posição de origem informada");	// ela também é uma exceção de Board, então podemos extender ela
 		}
+		if(!board.piece(position).isThereAnyPossibleMove()) {
+			throw new ChessException("Não existem movimentos possíveis para a peça escolhida!");
+		}
 	}
 
 	private void placeNewPiece(char column, int row, ChessPiece piece) {	// recebe as coordenadas do xadrez
