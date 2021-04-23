@@ -28,11 +28,12 @@ public class ChessMatch {	// regras do jogo de xadrez
 	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();	// convertendo as duas ChessPosition para posição de matriz
 		Position target = targetPosition.toPosition();	// convertendo as duas ChessPosition para posição de matriz
-		ValidateSourcePosition(source);	// Validar se a posição de origem(sourcePosition) existe
+		validateSourcePosition(source);	// Validar se a posição de origem(sourcePosition) existe
+		validateTargetPosition(source, target);	// validar se a posição de destino existe
 		Piece capturedPiece = makeMove(source, target);
 		return (ChessPiece)capturedPiece;	// downcast pq a peça capturada era do tipo Piece
 	}
-	
+
 	private Piece makeMove(Position source, Position target) {
 		Piece piece = board.removePiece(source);	// removeu a peça na posição de origem
 		Piece capturedPiece = board.removePiece(target);	// remover a possível peça que esteja na posição de destino, e ela por padrão será a peça capturada
@@ -40,12 +41,19 @@ public class ChessMatch {	// regras do jogo de xadrez
 		return capturedPiece;
 	}
 
-	private void ValidateSourcePosition(Position position) {
+	private void validateSourcePosition(Position position) {
 		if(!board.thereIsAPiece(position)) {
 			throw new ChessException("Não existe a peça na posição de origem informada");	// ela também é uma exceção de Board, então podemos extender ela
 		}
 		if(!board.piece(position).isThereAnyPossibleMove()) {
 			throw new ChessException("Não existem movimentos possíveis para a peça escolhida!");
+		}
+	}
+	
+	private void validateTargetPosition(Position source, Position target) {
+		// validar se a posição de destino ela é valida em relação à posição de origem: basta testar se a posição de destino, ela é um movimento possível em relação à peça que estiver na posição de origem
+		if(!board.piece(source).possibleMove(target)) { // se para a peça de origem, a posição de destino não é um movimento possível, significa que nao posso mexer para lá
+			throw new ChessException("A peça escolhida não pode se mexer para a posição de destino: Sem posíveis movimentos!");
 		}
 	}
 
