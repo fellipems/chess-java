@@ -23,6 +23,10 @@ public class Program {
 				System.out.println("Source: ");
 				ChessPosition source = UI.readChessPosition(sc);
 				
+				boolean[][] possibleMoves = chessMatch.possibleMoves(source);
+				UI.clearScreen();
+				UI.printBoard(chessMatch.getPieces(), possibleMoves);  // método de sobrecarga para ser responsável de imprimir o tabuleiro só que colorindo as posições possíves para onde minha peça pode ser movida
+				
 				System.out.println();
 				System.out.println("Target: ");
 				ChessPosition target = UI.readChessPosition(sc);
