@@ -9,9 +9,13 @@ import chess.pieces.Rook;
 public class ChessMatch {	// regras do jogo de xadrez
 
 	private Board board; 	// uma partida tem que ter um tabuleiro
+	private int turn;
+	private Color currentPlayer;
 	
 	public ChessMatch() {
 		board = new Board(8, 8);
+		turn = 1;
+		currentPlayer = Color.WHITE;
 		initialSetup();		// na hora que for criada a partida, criamos um tabuleiro 8 X 8 e chamamos o initialSetup
 	}
 	
@@ -37,6 +41,7 @@ public class ChessMatch {	// regras do jogo de xadrez
 		validateSourcePosition(source);	// Validar se a posição de origem(sourcePosition) existe
 		validateTargetPosition(source, target);	// validar se a posição de destino existe
 		Piece capturedPiece = makeMove(source, target);
+		nextTurn();
 		return (ChessPiece)capturedPiece;	// downcast pq a peça capturada era do tipo Piece
 	}
 
@@ -51,6 +56,9 @@ public class ChessMatch {	// regras do jogo de xadrez
 		if(!board.thereIsAPiece(position)) {
 			throw new ChessException("Não existe a peça na posição de origem informada");	// ela também é uma exceção de Board, então podemos extender ela
 		}
+		if(currentPlayer != ((ChessPiece)board.piece(position)).getColor()) {	// verificar se a peça é do jogador atual ou do adversário
+			throw new ChessException("A peça escolhida não é sua!");
+		}
 		if(!board.piece(position).isThereAnyPossibleMove()) {
 			throw new ChessException("Não existem movimentos possíveis para a peça escolhida!");
 		}
@@ -61,6 +69,11 @@ public class ChessMatch {	// regras do jogo de xadrez
 		if(!board.piece(source).possibleMove(target)) { // se para a peça de origem, a posição de destino não é um movimento possível, significa que nao posso mexer para lá
 			throw new ChessException("A peça escolhida não pode se mexer para a posição de destino: Sem posíveis movimentos!");
 		}
+	}
+	
+	private void nextTurn() {
+		turn++;
+		currentPlayer = currentPlayer == Color.WHITE ? Color.BLACK : Color.WHITE;
 	}
 
 	private void placeNewPiece(char column, int row, ChessPiece piece) {	// recebe as coordenadas do xadrez
@@ -84,4 +97,13 @@ public class ChessMatch {	// regras do jogo de xadrez
         placeNewPiece('e', 8, new Rook(board, Color.BLACK));
         placeNewPiece('d', 8, new King(board, Color.BLACK));
 	}
+
+	public int getTurn() {
+		return turn;
+	}
+
+	public Color getCurrentPlayer() {
+		return currentPlayer;
+	}
+	
 }
