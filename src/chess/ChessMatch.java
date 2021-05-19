@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
@@ -11,6 +14,9 @@ public class ChessMatch {	// regras do jogo de xadrez
 	private Board board; 	// uma partida tem que ter um tabuleiro
 	private int turn;
 	private Color currentPlayer;
+	
+	private List<Piece> piecesOnTheBoard = new ArrayList<>();
+	private List<Piece> capturedPieces = new ArrayList<>();
 	
 	public ChessMatch() {
 		board = new Board(8, 8);
@@ -49,6 +55,12 @@ public class ChessMatch {	// regras do jogo de xadrez
 		Piece piece = board.removePiece(source);	// removeu a peça na posição de origem
 		Piece capturedPiece = board.removePiece(target);	// remover a possível peça que esteja na posição de destino, e ela por padrão será a peça capturada
 		board.placePiece(piece, target);	// colocar a posição que estava na origem, lá na posição de destino
+		
+		if(capturedPiece != null) {	// quando movermos uma peça, temos que verificar se esse movimento causou uma captura de peça. Se capturou peça, temos que retirar ela do tabuleiro e colocar na lista de peças capturadas
+			piecesOnTheBoard.remove(capturedPiece);	// sempre que fizermos um movimento e esse movimento capturar uma peça, retiramos ela da lista de peças no tabuleiro e adicionamos na lista de peças capturadas
+			capturedPieces.add(capturedPiece);
+		}
+			
 		return capturedPiece;
 	}
 
@@ -77,7 +89,8 @@ public class ChessMatch {	// regras do jogo de xadrez
 	}
 
 	private void placeNewPiece(char column, int row, ChessPiece piece) {	// recebe as coordenadas do xadrez
-		board.placePiece(piece, new ChessPosition(column, row).toPosition());	// convertendo para a posição de matriz
+		board.placePiece(piece, new ChessPosition(column, row).toPosition());	// convertendo para a posição de matriz e colocando a peça no tabuleiro
+		piecesOnTheBoard.add(piece);	// colocar essa peça dentro da lista de peças do tabuleiro;
 	}
 	
 	private void initialSetup() {	// responsável por iniciar a partida de xadrez colocando as peças no tabuleiro
